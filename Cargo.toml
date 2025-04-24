@@ -7,13 +7,14 @@ members = [
     "tfhe-zk-pok",
     "tasks",
     "tfhe-csprng",
-    "backends/tfhe-cuda-backend",
+    #"backends/tfhe-cuda-backend",
     "utils/tfhe-versionable",
     "utils/tfhe-versionable-derive",
     "tests",
 ]
 
 exclude = [
+    "backends/tfhe-cuda-backend",
     "tests/backward_compatibility_tests",
     "utils/tfhe-lints",
     "apps/trivium",
