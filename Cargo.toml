@@ -7,7 +7,7 @@ members = [
     "tfhe-zk-pok",
     "tasks",
     "tfhe-csprng",
-    #"backends/tfhe-cuda-backend",
+    "backends/tfhe-cuda-backend",
     "utils/tfhe-versionable",
     "utils/tfhe-versionable-derive",
     "tests",
@@ -50,3 +50,4 @@ debug-assertions = false
 
 [workspace.metadata.dylint]
 libraries = [{ path = "utils/tfhe-lints" }]
+

@@ -99,16 +99,24 @@ fn main_test() {
 
 // -------------------------------------------------------------------------------------------------
 use tfhe::prelude::*;
-use tfhe::{generate_keys, set_server_key, ConfigBuilder, FheUint32, FheUint8};
+use tfhe::{generate_keys, set_server_key, ConfigBuilder, FheUint32, FheUint8, ClientKey, CompressedServerKey};
 
 fn test_process() -> Result<(), Box<dyn std::error::Error>> {
     let mut now = Local::now();
     info!("[{}] start process init...", now.format("%Y-%m-%d %H:%M:%S%.3f"));
     // Basic configuration to use homomorphic integers
+    //let config = ConfigBuilder::default().build();
+
     let config = ConfigBuilder::default().build();
 
+    let client_key= ClientKey::generate(config);
+    let compressed_server_key = CompressedServerKey::new(&client_key);
+
+    let gpu_key = compressed_server_key.decompress_to_gpu();
+
+
     // Key generation
-    let (client_key, server_keys) = generate_keys(config);
+   // let (client_key, server_keys) = generate_keys(config);
 
     let clear_a = 1344u32;
     let clear_b = 5u32;
@@ -123,7 +131,7 @@ fn test_process() -> Result<(), Box<dyn std::error::Error>> {
     let encrypted_c = FheUint8::try_encrypt(clear_c, &client_key)?;
 
     // On the server side:
-    set_server_key(server_keys);
+    set_server_key(gpu_key);
 
     now = Local::now();
     info!("[{}] set process server key...", now.format("%Y-%m-%d %H:%M:%S%.3f"));
