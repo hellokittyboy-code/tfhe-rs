@@ -11,5 +11,5 @@ log = "0.4"
 simplelog = "0.12"
 walkdir = "2.5.0"
 no-comment = "0.0.3"
-tfhe = { path = "../tfhe", features = ["boolean", "shortint", "integer"]}
+tfhe = { path = "../tfhe", features = ["boolean", "shortint", "integer", "gpu"]}
 chrono = "0.4"
