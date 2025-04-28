@@ -3,6 +3,7 @@ use log::LevelFilter;
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering::Relaxed;
+use chrono::Local;
 
 mod check_tfhe_docs_are_tested;
 mod format_latex_doc;
@@ -101,7 +102,8 @@ use tfhe::prelude::*;
 use tfhe::{generate_keys, set_server_key, ConfigBuilder, FheUint32, FheUint8};
 
 fn test_process() -> Result<(), Box<dyn std::error::Error>> {
-    info!("start process init...");
+    let mut now = Local::now();
+    info!("[{}] start process init...", now.format("%Y-%m-%d %H:%M:%S%.3f"));
     // Basic configuration to use homomorphic integers
     let config = ConfigBuilder::default().build();
 
@@ -123,36 +125,43 @@ fn test_process() -> Result<(), Box<dyn std::error::Error>> {
     // On the server side:
     set_server_key(server_keys);
 
-    info!("set process server key...");
+    now = Local::now();
+    info!("[{}] set process server key...", now.format("%Y-%m-%d %H:%M:%S%.3f"));
 
 
     // Clear equivalent computations: 1344 * 5 = 6720
     let encrypted_res_mul = &encrypted_a * &encrypted_b;
-    info!("set process sClear equivalent computations: 1344 * 5 = 6720...");
+    let now = Local::now();
+    info!("[{}] set process sClear equivalent computations: 1344 * 5 = 6720...", now.format("%Y-%m-%d %H:%M:%S%.3f"));
 
     // Clear equivalent computations: 6720 >> 5 = 210
     encrypted_a = &encrypted_res_mul >> &encrypted_b;
-    info!("set process Clear equivalent computations: 6720 >> 5 = 210");
+    let now = Local::now();
+    info!("[{}] set process Clear equivalent computations: 6720 >> 5 = 210", now.format("%Y-%m-%d %H:%M:%S%.3f"));
 
     // Clear equivalent computations: let casted_a = a as u8;
     let casted_a: FheUint8 = encrypted_a.cast_into();
-    info!("set process Clear equivalent computations: let casted_a = a as u8;");
+    let now = Local::now();
+    info!("[{}] set process Clear equivalent computations: let casted_a = a as u8;", now.format("%Y-%m-%d %H:%M:%S%.3f"));
 
     // Clear equivalent computations: min(210, 7) = 7
     let encrypted_res_min = &casted_a.min(&encrypted_c);
-    info!("Clear equivalent computations: min(210, 7) = 7");
+    let now = Local::now();
+    info!("[{}] Clear equivalent computations: min(210, 7) = 7", now.format("%Y-%m-%d %H:%M:%S%.3f"));
 
 
     // Operation between clear and encrypted data:
     // Clear equivalent computations: 7 & 1 = 1
     let encrypted_res = encrypted_res_min & 1_u8;
 
-    info!("encrpted res...");
+    let now = Local::now();
+    info!("[{}] encrpted res...", now.format("%Y-%m-%d %H:%M:%S%.3f"));
 
 
     // Decrypting on the client side:
     let clear_res: u8 = encrypted_res.decrypt(&client_key);
     assert_eq!(clear_res, 1_u8);
-    info!("test process executed successfully");
+    let now = Local::now();
+    info!("[{}] test process executed successfully", now.format("%Y-%m-%d %H:%M:%S%.3f"));
     Ok(())
 }
